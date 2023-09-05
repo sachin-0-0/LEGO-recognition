@@ -3,6 +3,30 @@ import math
 import random
 import os
 
+# List of the normalized colors you provided
+colors = [
+    (1, 1, 1),
+    (0, 0, 0),
+    (0.7686, 0, 0),
+    (0, 0.2, 0.698),
+    (1, 0.8039, 0),
+    (0, 0.5216, 0.1686),
+    (0.3333, 0.2, 0.1059),
+    (0.3333, 0.349, 0.3333),
+    (0.6471, 0.6471, 0.6431),
+    (0.8235, 0.7451, 0.5882),
+    (0, 0.4, 0.2),
+    (1, 0.4824, 0),
+    (0.4706, 0.5647, 0.5098),
+    (1, 0.6078, 0.8039),
+    (0.6392, 0.2863, 0.6392),
+    (0.6275, 1, 0),
+    (0, 0.0627, 0.6902),
+    (0, 0.502, 0.502),
+    (0.4549, 0.5255, 0.6157),
+    (0.5451, 0, 0)
+]
+
 def clear_mesh_objects():
     bpy.ops.object.select_all(action='DESELECT')
     bpy.ops.object.select_by_type(type='MESH')
@@ -15,20 +39,24 @@ def load_stl(stl_part_number):
     bpy.ops.import_mesh.stl(filepath=stl_path)
     return bpy.context.active_object
 
-for stl_part_number in range(1, 11):  # Adjust this range based on how many STL files you have
+def add_lego_material(obj, color):
+    material = bpy.data.materials.new(name="LEGO_Material")
+    material.diffuse_color = (*color, 1)
+    material.specular_intensity = 0.5  # Increase specular reflection
+    material.roughness = 0.05  # Decrease roughness for shiny look
+    obj.data.materials.append(material)
+
+for stl_part_number in range(3, 60):
     clear_mesh_objects()
 
     imported_object = load_stl(stl_part_number)
-    if not imported_object:  # If the STL file did not exist, it will return None, so skip this iteration
+    if not imported_object:
         continue
-    
+
     imported_object.location = (0, 0, 0)
     imported_object.scale = (1, 1, 1)
 
-    object_color = (0.5, 0.5, 0)
-    material = bpy.data.materials.new(name="Custom_Material")
-    material.diffuse_color = (*object_color, 1)
-    imported_object.data.materials.append(material)
+    add_lego_material(imported_object, random.choice(colors))
 
     bpy.context.scene.world.node_tree.nodes['Background'].inputs[0].default_value = (1, 1, 1, 1)
     camera = bpy.data.objects['Camera']
