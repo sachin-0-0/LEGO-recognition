@@ -46,6 +46,12 @@ def add_lego_material(obj, color):
     material.roughness = 0.05  # Decrease roughness for shiny look
     obj.data.materials.append(material)
 
+def clear_lights():
+    """Delete all light sources in the current scene."""
+    bpy.ops.object.select_all(action='DESELECT')  # Deselect all objects
+    bpy.ops.object.select_by_type(type='LIGHT')  # Select all light sources
+    bpy.ops.object.delete()  # Delete selected light sources
+
 for stl_part_number in range(3, 60):
     clear_mesh_objects()
 
