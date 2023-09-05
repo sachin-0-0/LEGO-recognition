@@ -1,5 +1,6 @@
 import numpy as np
 from stl import mesh
+from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import os
