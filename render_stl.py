@@ -1,8 +1,7 @@
 import numpy as np
 from stl import mesh
 from mpl_toolkits import mplot3d
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 import os
 
 # Specify path for the new folder
@@ -15,18 +14,29 @@ if not os.path.exists(path):
     os.makedirs(path)
 
 # Load the STL files
-your_mesh = mesh.Mesh.from_file('your_stl_file.stl')
+your_mesh = mesh.Mesh.from_file('1.stl')
 
 # Create a new plot
 figure = plt.figure()
-axes = Axes3D(figure)
+axes = mplot3d.Axes3D(figure)
 
 # Render the STL mesh
-axes.add_collection3d(mplot3d.art3d.Poly3DCollection(your_mesh.vectors))
+poly = mplot3d.art3d.Poly3DCollection(your_mesh.vectors, linewidths=0.05, alpha=1, edgecolors='r')
 
-# Auto scale the rendering
-scale = your_mesh.points.flatten()
+# Make the object green
+poly.set_facecolor((0,1,0))
+
+axes.add_collection3d(poly)
+
+# Auto scale to the mesh size
+scale = your_mesh.points.flatten(None)
 axes.auto_scale_xyz(scale, scale, scale)
 
+# Set the background color to white
+axes.set_facecolor((1,1,1))
+
+# Hide the axes
+axes.set_axis_off()
+
 # Save the plot to the new folder
-plt.savefig(os.path.join(path, 'your_image.png'))
+plt.savefig(os.path.join(path, 'your_image.png'), bbox_inches='tight', pad_inches=0, transparent=True)
